@@ -34,7 +34,7 @@ int main (int argc, char * const argv[])
   char *tmpCommandName = new char[256];
   strcpy(tmpCommandName, argv[0]);
 
-  int returnCode = session.applyCommandLine(tmpArgc, const_cast<char * const *>(&tmpCommandName));
+  int returnCode = session.applyCommandLine(tmpArgc, const_cast<char **>(&tmpCommandName));
   if(returnCode != 0) // Indicates a command line error
     return returnCode;
 
