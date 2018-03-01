@@ -162,6 +162,13 @@ if(WIN32 AND NOT BUILD_SHARED_LIBS)
   add_definitions(-DMYPROJECT_STATIC)
 endif()
 
+if(UNIX)
+  mitkFunctionCheckCompilerFlags("-Wno-deprecated-declarations" MYPROJECT_NO_DEPRECATED_FLAG)
+  if(MYPROJECT_NO_DEPRECATED_FLAG)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MYPROJECT_NO_DEPRECATED_FLAG}" CACHE STRING "FLags used by the compiler during all build types." FORCE)
+  endif()
+endif()
+
 include(mpIncludeOpenMP)
 include(mpIncludeMPI)
 
