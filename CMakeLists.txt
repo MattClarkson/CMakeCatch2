@@ -55,8 +55,6 @@ include(mitkFunctionCheckCompilerFlags)
 ######################################################################
 option(BUILD_TESTING "Build Unit tests." ON)
 option(BUILD_SHARED_LIBS "Build Shared Libraries" OFF)
-option(MYPROJECT_USE_OPENMP "Use OpenMP." OFF)
-option(MYPROJECT_USE_MPI "Use MPI." OFF)
 
 
 ######################################################################
@@ -168,9 +166,6 @@ if(UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MYPROJECT_NO_DEPRECATED_FLAG}" CACHE STRING "FLags used by the compiler during all build types." FORCE)
   endif()
 endif()
-
-include(mpIncludeOpenMP)
-include(mpIncludeMPI)
 
 
 ######################################################################
