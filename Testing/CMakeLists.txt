@@ -22,7 +22,7 @@ set(TEST_CASES
 
 foreach(_test_case ${TEST_CASES})
   add_executable(${_test_case} ${_test_case}.cpp mpCatchMain.cpp)
-  target_link_libraries(${_test_case} ${ALL_LIBRARIES})
+  target_link_libraries(${_test_case} ${MYPROJECT_LIBRARIES} ${ALL_THIRD_PARTY_LIBRARIES})
 endforeach()
 
 # Adding tests is done outside the above loop,
