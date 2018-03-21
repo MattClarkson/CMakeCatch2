@@ -1,0 +1,75 @@
+language: cpp
+sudo: required
+dist: trusty
+addons:
+    apt:
+        sources:
+          # add PPAs with more up-to-date toolchains
+          - ubuntu-toolchain-r-test
+          - llvm-toolchain-precise-3.6
+        packages:
+          # install toolchains
+          - gcc-5
+          - g++-5
+          - clang-3.6
+
+matrix:
+  include:
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-4.9
+      env: COMPILER=g++-4.9
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+      env: COMPILER=g++-5
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
+          packages:
+            - clang-3.6
+      env: COMPILER=clang++-3.6
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.7
+          packages:
+            - clang-3.7
+      env: COMPILER=clang++-3.7
+
+before_install:
+  - |
+    sudo apt-get update
+    sudo apt-get -yqq install freeglut3
+    sudo apt-get -yqq install freeglut3-dev 
+    sudo apt-get -yqq install binutils-gold 
+    sudo apt-get -yqq install libglew-dev 
+    sudo apt-get -yqq install mesa-common-dev  
+    sudo apt-get -yqq install build-essential 
+    sudo apt-get -yqq install libglew1.5-dev 
+    sudo apt-get -yqq install libglm-dev 
+    sudo apt-get -yqq install mesa-utils-extra 
+    sudo apt-get -yqq install libgl1-mesa-dev 
+    sudo apt-get -yqq install libglapi-mesa 
+    wget -q https://cmake.org/files/v3.6/cmake-3.6.3-Linux-x86_64.sh
+    sh cmake-3.6.3-Linux-x86_64.sh --skip-license
+
+script:
+  - mkdir build
+  - cd build
+  - ../bin/cmake -DBUILD_TESTING:BOOL=ON ..
+  - make
+  - ctest .
