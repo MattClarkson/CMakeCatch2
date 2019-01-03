@@ -1,57 +1,61 @@
-#/*============================================================================
-#
-#  MYPROJECT: A software package for whatever.
-#
-#  Copyright (c) University College London (UCL). All rights reserved.
-#
-#  This software is distributed WITHOUT ANY WARRANTY; without even
-#  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-#  PURPOSE.
-#
-#  See LICENSE.txt in the top level directory for details.
-#
-#============================================================================*/
-
 version: "{build}"
-
-os: Visual Studio 2015
 
 init:
   - git config --global core.autocrlf input
 
-clone_folder: c:\projects\CMakeCatch2
+clone_folder: c:\projects\CMakeHelloWorld
 
-shallow_clone: true
+shallow_clone: false
 
 environment:
   matrix:
-    - COMPILER: "Visual Studio 14 Win64"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      COMPILER: "Visual Studio 14"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      COMPILER: "Visual Studio 14 Win64"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      COMPILER: "Visual Studio 14"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      COMPILER: "Visual Studio 14 Win64"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      COMPILER: "Visual Studio 15"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      COMPILER: "Visual Studio 15 Win64"
 
-platform:
-  - x64
+matrix:
+  # This is so that if any of the above builds fails, then the whole build fails early.
+  fast_finish: true
 
 configuration:
   - Release
 
-matrix:
-  fast_finish: true
+platform:
+  # Set to 'Any CPU', as it is the COMPILER string listed above that tells
+  # cmake to pick a generator for either a 64 or 32 bit build.
+  - Any CPU
 
 before_build:
-  - echo --------------------------------------------------------------------------------
-  - echo Appveyor environment info:
-  - echo COMPILER = %COMPILER%, CONFIGURATION = %CONFIGURATION%
-  - cmake -version
-  - pwd
-  - rem --------------------------------------------------------------------------------
+- cmd: |
+    echo --------------------------------------------------------------------------------
+    echo "COMPILER=%COMPILER%, CONFIGURATION=%CONFIGURATION%"
+    cmake -version
+    pwd
+    git submodule update -q --init --recursive
+    echo "PATH=%PATH%"
+    echo --------------------------------------------------------------------------------
 
 build_script:
-  - echo --------------------------------------------------------------------------------
-  - echo Build CMakeCatchTemplate:
-  - mkdir build
-  - cd build
-  - cmake -G "%COMPILER%" -DCMAKE_PREFIX_PATH=C:\Qt\5.6\msvc2015_64 -DBUILD_TESTING:BOOL=ON --config %CONFIGURATION% ..
-  - cmake --build . --config %CONFIGURATION%
+- cmd: |
+    echo --------------------------------------------------------------------------------
+    mkdir build
+    cd build
+    cmake -G "%COMPILER%"  -DBUILD_TESTING:BOOL=ON --config %CONFIGURATION% ..
+    cmake --build . --config %CONFIGURATION%
+    echo --------------------------------------------------------------------------------
 
 test_script:
-  - pwd
-  - ctest -C %CONFIGURATION%
+- cmd: |
+    echo --------------------------------------------------------------------------------
+    pwd
+    ctest -C %CONFIGURATION%
+    echo --------------------------------------------------------------------------------
