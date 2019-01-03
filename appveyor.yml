@@ -36,27 +36,26 @@ platform:
 
 before_build:
 - cmd: |
-  echo --------------------------------------------------------------------------------
-  echo "COMPILER=%COMPILER%, PYTHON=%MB_PYTHON%, CONFIGURATION=%CONFIGURATION%"
-  cmake -version
-  pwd
-  git submodule update -q --init --recursive
-  echo "PATH=%PATH%"
-  echo --------------------------------------------------------------------------------
+    echo --------------------------------------------------------------------------------
+    echo "COMPILER=%COMPILER%, CONFIGURATION=%CONFIGURATION%"
+    cmake -version
+    pwd
+    git submodule update -q --init --recursive
+    echo "PATH=%PATH%"
+    echo --------------------------------------------------------------------------------
 
 build_script:
 - cmd: |
-  echo --------------------------------------------------------------------------------
-  mkdir build
-  cd build
-  cmake -G "%COMPILER%"  -DBUILD_TESTING:BOOL=ON --config %CONFIGURATION% ..
-  cmake --build . --config %CONFIGURATION%
-  echo --------------------------------------------------------------------------------
-
+    echo --------------------------------------------------------------------------------
+    mkdir build
+    cd build
+    cmake -G "%COMPILER%"  -DBUILD_TESTING:BOOL=ON --config %CONFIGURATION% ..
+    cmake --build . --config %CONFIGURATION%
+    echo --------------------------------------------------------------------------------
 
 test_script:
 - cmd: |
-  echo --------------------------------------------------------------------------------
-  pwd
-  ctest -C %CONFIGURATION%
-  echo --------------------------------------------------------------------------------
+    echo --------------------------------------------------------------------------------
+    pwd
+    ctest -C %CONFIGURATION%
+    echo --------------------------------------------------------------------------------
