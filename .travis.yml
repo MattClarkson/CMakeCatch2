@@ -1,75 +1,50 @@
 language: cpp
 sudo: required
 dist: trusty
+
 addons:
-    apt:
-        sources:
-          # add PPAs with more up-to-date toolchains
-          - ubuntu-toolchain-r-test
-          - llvm-toolchain-precise-3.6
-        packages:
-          # install toolchains
-          - gcc-5
-          - g++-5
-          - clang-3.6
+  apt:
+    packages:
+      - cmake
+  homebrew:
+    packages:
+      - cmake
 
 matrix:
+  fast_finish: true
   include:
-    - compiler: gcc
+    # Builds for MacOS
+    - os: osx
+      osx_image: xcode8
+      env:
+        - EXTRA_CMAKE_ARGS="-DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.7"
+    # Builds for Linux
+    - os: linux
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
           packages:
             - g++-4.9
-      env: COMPILER=g++-4.9
-    - compiler: gcc
+      env:
+         - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
+
+    - os: linux
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - g++-5
-      env: COMPILER=g++-5
-    - compiler: clang
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.6
-          packages:
-            - clang-3.6
-      env: COMPILER=clang++-3.6
-    - compiler: clang
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.7
-          packages:
-            - clang-3.7
-      env: COMPILER=clang++-3.7
+            - g++-7
+      env:
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
 before_install:
-  - |
-    sudo apt-get update
-    sudo apt-get -yqq install freeglut3
-    sudo apt-get -yqq install freeglut3-dev 
-    sudo apt-get -yqq install binutils-gold 
-    sudo apt-get -yqq install libglew-dev 
-    sudo apt-get -yqq install mesa-common-dev  
-    sudo apt-get -yqq install build-essential 
-    sudo apt-get -yqq install libglew1.5-dev 
-    sudo apt-get -yqq install libglm-dev 
-    sudo apt-get -yqq install mesa-utils-extra 
-    sudo apt-get -yqq install libgl1-mesa-dev 
-    sudo apt-get -yqq install libglapi-mesa 
-    wget -q https://cmake.org/files/v3.6/cmake-3.6.3-Linux-x86_64.sh
-    sh cmake-3.6.3-Linux-x86_64.sh --skip-license
+  - eval "${MATRIX_EVAL}"
 
-script:
-  - mkdir build
-  - cd build
-  - ../bin/cmake -DBUILD_TESTING:BOOL=ON ..
-  - make
-  - ctest .
+script: |
+  mkdir build
+  cd build
+  cmake -DBUILD_TESTING:BOOL=ON ..
+  make
+  ctest .
